@@ -37,11 +37,14 @@ class UserController {
 
   async getAllUsers(request: Request, response: Response, next: NextFunction) {
     const { pageSize, pageNumber } = request.query;
-    const DEFAULT_PAGE_SIZE = 5;
+    const DEFAULT_PAGE_SIZE = 2;
     const DEFAULT_PAGE_NUMBER = 1;
 
-    const number = Number(pageNumber) ?? DEFAULT_PAGE_NUMBER;
-    const size = Number(pageSize) ?? DEFAULT_PAGE_SIZE;
+    const number = pageNumber ? Number(pageNumber) : DEFAULT_PAGE_NUMBER;
+    const size = pageSize ? Number(pageSize) : DEFAULT_PAGE_SIZE;
+
+    console.log("size", size);
+    console.log("number", number);
 
     try {
       const result = await this.usersUserCase.findAllUsers({

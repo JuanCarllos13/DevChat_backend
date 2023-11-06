@@ -75,12 +75,11 @@ class User {
     };
   }
 
-  findAllUsers({pageNumber, pageSize}: IPagination){
-    const result = this.userRepository.findAllUsers({pageNumber, pageSize})
+  findAllUsers({ pageNumber, pageSize }: IPagination) {
+    const result = this.userRepository.findAllUsers({ pageNumber, pageSize });
 
-    return result
+    return result;
   }
-  
 }
 
 export { User };

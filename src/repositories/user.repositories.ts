@@ -21,7 +21,7 @@ class UsersRepository {
   async findAllUsers({ pageNumber, pageSize }: IPagination) {
     const result = await UsersModel.find()
       .skip((pageNumber - 1) * pageSize)
-      .limit(pageSize);
+      .limit(pageSize).exec();
 
     return result;
   }
