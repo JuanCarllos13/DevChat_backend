@@ -27,33 +27,30 @@ class Message {
     await this.messageRepository.create({
       to_user_id: findUserByEmail.id,
       from_user_id: user_id,
-      body_message: message_from_user,
+      bodyMessage: message_from_user,
       room_id,
     });
-
     return { message: "save message" };
   }
-
   async updateView(room_id: string, user_id: string, email_to_user: string) {
+    //Buscar o id da room
+    //filtrar todas as messagens nao lidas daquele usuario que esta recebendo a mensagem (to_user_id)
+    // ordernar por ordem decrescente que nao estao lidas
     const findUserByEmail = await this.userRepository.findUserByEmail({
       email: email_to_user,
     });
-
-    console.log("find", findUserByEmail)
 
     if (!findUserByEmail) {
       throw new HttpException(400, "User not found");
     }
 
-    const updateMessageUser = await this.messageRepository.updateMessage(
+    const updateMessagesUser = this.messageRepository.updateMessage(
       room_id,
       user_id,
       findUserByEmail.id
     );
 
-    console.log("aq", updateMessageUser)
-
-    return updateMessageUser;
+    return updateMessagesUser;
   }
 }
 
