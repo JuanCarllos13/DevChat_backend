@@ -7,6 +7,7 @@ import fs from "fs";
 import dotenv from "dotenv";
 import { errorMiddleware } from "./middlewares/error.middlewares";
 import { RoomsRoutes } from "./routes/rooms.routes";
+import { MessageRoutes } from "./routes/message.routes";
 
 class App {
   public app: Application;
@@ -14,6 +15,7 @@ class App {
   private io: Server;
   private userRoutes = new UserRoutes();
   private roomsRoutes = new RoomsRoutes();
+  private MessageRoutes = new MessageRoutes();
 
   constructor() {
     this.app = express();
@@ -35,7 +37,15 @@ class App {
     });
   }
   listenSocket() {
-    this.io.on("connection", (socket) => console.log("a user connected"));
+    this.io.on("connection", (socket) => {
+      socket.on("join_room", (room_id) => {
+        socket.join(room_id);
+      });
+
+      socket.on("message", (data) => {
+        socket.to(data.room_id).emit("message", data.message)
+      })
+    });
   }
 
   private initializeHtml() {
@@ -53,6 +63,7 @@ class App {
   private initializeRoutes() {
     this.app.use("/users", this.userRoutes.router);
     this.app.use("/rooms", this.roomsRoutes.router);
+    this.app.use("/messages", this.MessageRoutes.router)
   }
 
   private interceptionError() {
