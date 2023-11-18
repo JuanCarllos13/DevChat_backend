@@ -1,6 +1,5 @@
 import { sign } from "jsonwebtoken";
-import { UsersModel } from "../infra/models/users.model";
-import { IAuth, ICreateUser, IPagination } from "../interfaces/users.interface";
+import { IAuth, ICreate, IPagination } from "../interfaces/users.interface";
 import { UsersRepository } from "../repositories/user.repositories";
 import { compare, hash } from "bcrypt";
 import { HttpException } from "../interfaces/HttpExceptions";
@@ -11,7 +10,7 @@ class User {
     this.userRepository = new UsersRepository();
   }
 
-  async createUser({ email, name, password }: ICreateUser) {
+  async createUser({ email, name, password }: ICreate) {
     const findUser = await this.userRepository.findUserByEmail({
       email,
     });
@@ -31,7 +30,11 @@ class User {
     return result;
   }
 
-  update() {}
+  async upload(filename: string, user_id: string) {
+    const result = await this.userRepository.upload(filename, user_id);
+
+    return result;
+  }
 
   async auth({ email, password }: IAuth) {
     const findUser = await this.userRepository.findUserByEmail({
