@@ -42,6 +42,25 @@ class MessageController {
       next(error);
     }
   }
+
+  async getHistoric(request: Request, response: Response, next: NextFunction) {
+    const { user_id } = request;
+    const {emailDestinatary} = request.params
+    const {page} = request.query
+    const DEFAULT_PAGE = 1
+    const pageNumber = Number(page) ? Number(page) : DEFAULT_PAGE
+    try {
+      const result = await this.messageUseCase.getHistoric({
+        emailDestinatary, 
+        pageNumber, 
+        userId: user_id
+      })
+
+      return response.status(200).json(result)
+    } catch (error) {
+      next(error);
+    }
+  }
 }
 
 export { MessageController };

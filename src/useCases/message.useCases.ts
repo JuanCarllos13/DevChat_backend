@@ -1,4 +1,5 @@
 import { HttpException } from "../interfaces/HttpExceptions";
+import { IGetHistoric } from "../interfaces/message.interface";
 import { MessageRepository } from "../repositories/message.repositories";
 import { UsersRepository } from "../repositories/user.repositories";
 
@@ -33,9 +34,6 @@ class Message {
     return { message: "save message" };
   }
   async updateView(room_id: string, user_id: string, email_to_user: string) {
-    //Buscar o id da room
-    //filtrar todas as messagens nao lidas daquele usuario que esta recebendo a mensagem (to_user_id)
-    // ordernar por ordem decrescente que nao estao lidas
     const findUserByEmail = await this.userRepository.findUserByEmail({
       email: email_to_user,
     });
@@ -51,6 +49,23 @@ class Message {
     );
 
     return updateMessagesUser;
+  }
+
+  async getHistoric({ emailDestinatary, pageNumber, userId }: IGetHistoric) {
+    const findUserByEmail = await this.userRepository.findUserByEmail({
+      email: emailDestinatary,
+    });
+
+    if(!findUserByEmail){
+      throw new HttpException(400, "User not found")
+    }
+    const message = await this.messageRepository.getHistoric({
+      userId,
+      userIdDestinatary: findUserByEmail.id,
+      pageNumber
+    })
+
+    return message
   }
 }
 

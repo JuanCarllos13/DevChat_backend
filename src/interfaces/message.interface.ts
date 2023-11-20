@@ -5,3 +5,15 @@ export interface IMessage {
   room_id: string;
   createdAt?: Date;
 }
+
+export interface IGetHistoric {
+  emailDestinatary: string;
+  pageNumber: number;
+  userId: string
+}
+
+export interface IGetLastMessage {
+  userId: string
+  userIdDestinatary: string,
+  pageNumber: number
+}

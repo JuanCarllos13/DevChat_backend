@@ -1,5 +1,5 @@
 import { MessageModel } from "../infra/models/message.model";
-import { IMessage } from "../interfaces/message.interface";
+import { IGetLastMessage, IMessage } from "../interfaces/message.interface";
 
 class MessageRepository {
   async create({
@@ -50,6 +50,31 @@ class MessageRepository {
     );
 
     return result ? true : false;
+  }
+
+  async getHistoric({
+    userId,
+    userIdDestinatary,
+    pageNumber,
+  }: IGetLastMessage): Promise<IMessage[]> {
+    const query = {
+      $or: [
+        {
+          to_user_id: userId,
+          from_user_id: userIdDestinatary,
+        },
+        {
+          to_user_id: userIdDestinatary,
+          from_user_id: userId,
+        },
+      ],
+    };
+    const result = await MessageModel.find(query)
+      .skip((pageNumber - 1) * 10)
+      .limit(10)
+      .sort({ createdAt: -1 });
+    const resultReverse = result.reverse();
+    return result ? resultReverse.map((message) => message.toObject()) : [];
   }
 }
 

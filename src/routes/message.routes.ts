@@ -22,6 +22,11 @@ class MessageRoutes {
       authMiddleware,
       this.messageController.updateView.bind(this.messageController)
     );
+    this.router.get(
+      "/historic/:emailDestinatary",
+      authMiddleware,
+      this.messageController.getHistoric.bind(this.messageController)
+    );
   }
 }
 
